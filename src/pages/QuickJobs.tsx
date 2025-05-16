@@ -1,6 +1,5 @@
 
 import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +7,6 @@ import { MOCK_SERVICES, MOCK_LOCATIONS, MOCK_WORKERS } from "@/lib/models";
 import { toast } from "sonner";
 
 const QuickJobs = () => {
-  const { t } = useTranslation();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     customerName: "",
@@ -97,7 +95,7 @@ const QuickJobs = () => {
   return (
     <div className="max-w-3xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
       <h1 className="text-3xl font-bold text-bluehire-800 mb-8">
-        {t("navigation.quickJobs")}
+        Quick Jobs
       </h1>
       
       {step === 1 && (
@@ -125,7 +123,7 @@ const QuickJobs = () => {
               
               <div className="space-y-2">
                 <label htmlFor="serviceType" className="block text-sm font-medium text-gray-700">
-                  {t("quickJobs.serviceType")}
+                  Service Type
                 </label>
                 <select
                   id="serviceType"
@@ -146,7 +144,7 @@ const QuickJobs = () => {
               
               <div className="space-y-2">
                 <label htmlFor="location" className="block text-sm font-medium text-gray-700">
-                  {t("quickJobs.yourLocation")}
+                  Your Location
                 </label>
                 <select
                   id="location"
@@ -166,7 +164,7 @@ const QuickJobs = () => {
               </div>
               
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Submitting..." : t("quickJobs.findFix")}
+                {isSubmitting ? "Submitting..." : "Find Fix"}
               </Button>
             </form>
           </CardContent>
@@ -200,7 +198,7 @@ const QuickJobs = () => {
       {step === 3 && activeRequest?.worker && (
         <Card>
           <CardHeader>
-            <CardTitle>{t("quickJobs.accepted")}</CardTitle>
+            <CardTitle>Worker Accepted</CardTitle>
             <CardDescription>
               A worker has accepted your service request
             </CardDescription>
@@ -257,13 +255,13 @@ const QuickJobs = () => {
                   const code = generateHappyCode();
                 }}
               >
-                {t("quickJobs.generateCode")}
+                Generate Happy Code
               </Button>
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-3">
             <Button onClick={handleComplete} className="w-full">
-              {t("quickJobs.complete")}
+              Complete
             </Button>
             <Button variant="outline" onClick={handleCancel} className="w-full">
               Cancel Service

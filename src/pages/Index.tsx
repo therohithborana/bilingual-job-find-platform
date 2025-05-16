@@ -1,39 +1,36 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MOCK_JOBS, MOCK_SERVICES } from "@/lib/models";
 
 const Index = () => {
-  const { t } = useTranslation();
-
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="bluehire-gradient text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            {t("landing.hero")}
+            Find the right job or talent
           </h1>
           <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
-            {t("common.tagline")}
+            Connecting skills to opportunities
           </p>
           <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
             <Link to="/jobs">
               <Button size="lg" className="w-full sm:w-auto bg-white text-bluehire-700 hover:bg-gray-100">
-                {t("landing.applyForJobs")}
+                Apply for Jobs
               </Button>
             </Link>
             <Link to="/recruiter/job-post">
               <Button size="lg" className="w-full sm:w-auto bg-bluehire-700 text-white hover:bg-bluehire-800 border border-white">
-                {t("landing.postJobs")}
+                Post Jobs
               </Button>
             </Link>
             <Link to="/quick-jobs">
               <Button size="lg" className="w-full sm:w-auto bg-white text-bluehire-700 hover:bg-gray-100">
-                {t("landing.quickService")}
+                Quick Service
               </Button>
             </Link>
           </div>
@@ -63,7 +60,7 @@ const Index = () => {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
-            {t("landing.featured")}
+            Featured Jobs
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {MOCK_JOBS.slice(0, 3).map((job) => (
@@ -82,7 +79,7 @@ const Index = () => {
                   <p className="text-gray-600 mb-4 line-clamp-2">{job.description}</p>
                   <div className="text-right">
                     <Link to={`/jobs/${job._id}`}>
-                      <Button>{t("jobs.apply")}</Button>
+                      <Button>Apply</Button>
                     </Link>
                   </div>
                 </CardContent>
@@ -101,7 +98,7 @@ const Index = () => {
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
-            {t("landing.howItWorks")}
+            How it works
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
@@ -146,7 +143,7 @@ const Index = () => {
           </p>
           <Link to="/register">
             <Button size="lg" className="bg-white text-bluehire-700 hover:bg-gray-100">
-              {t("landing.joinNow")}
+              Join Now
             </Button>
           </Link>
         </div>

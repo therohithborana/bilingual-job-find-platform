@@ -1,7 +1,6 @@
 
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -15,7 +14,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
-  const { t } = useTranslation();
   const { user, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -26,7 +24,7 @@ const Navbar = () => {
           <div className="flex">
             <Link to="/" className="flex-shrink-0 flex items-center">
               <span className="text-2xl font-bold text-bluehire-600">
-                {t("common.appName")}
+                BlueHire
               </span>
             </Link>
           </div>
@@ -37,20 +35,20 @@ const Navbar = () => {
               to="/jobs"
               className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-bluehire-600 hover:bg-gray-50"
             >
-              {t("navigation.jobs")}
+              Jobs
             </Link>
             <Link
               to="/quick-jobs"
               className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-bluehire-600 hover:bg-gray-50"
             >
-              {t("navigation.quickJobs")}
+              Quick Jobs
             </Link>
             {user && (
               <Link
                 to={user.role === 'worker' ? '/worker/profile' : '/recruiter/dashboard'}
                 className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-bluehire-600 hover:bg-gray-50"
               >
-                {t("navigation.profile")}
+                Profile
               </Link>
             )}
           </div>
@@ -73,20 +71,20 @@ const Navbar = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <Link to={user.role === 'worker' ? '/worker/profile' : '/recruiter/dashboard'}>
-                      {t("navigation.profile")}
+                      Profile
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logout}>{t("auth.signOut")}</DropdownMenuItem>
+                  <DropdownMenuItem onClick={logout}>Sign Out</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <div className="flex space-x-2">
                 <Link to="/login">
-                  <Button variant="ghost">{t("auth.signIn")}</Button>
+                  <Button variant="ghost">Sign In</Button>
                 </Link>
                 <Link to="/register">
-                  <Button variant="default">{t("auth.signUp")}</Button>
+                  <Button variant="default">Sign Up</Button>
                 </Link>
               </div>
             )}
@@ -135,14 +133,14 @@ const Navbar = () => {
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-bluehire-600 hover:bg-gray-50"
               onClick={() => setIsMenuOpen(false)}
             >
-              {t("navigation.jobs")}
+              Jobs
             </Link>
             <Link
               to="/quick-jobs"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-bluehire-600 hover:bg-gray-50"
               onClick={() => setIsMenuOpen(false)}
             >
-              {t("navigation.quickJobs")}
+              Quick Jobs
             </Link>
             {user && (
               <Link
@@ -150,7 +148,7 @@ const Navbar = () => {
                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-bluehire-600 hover:bg-gray-50"
                 onClick={() => setIsMenuOpen(false)}
               >
-                {t("navigation.profile")}
+                Profile
               </Link>
             )}
           </div>
@@ -168,7 +166,7 @@ const Navbar = () => {
                   className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-bluehire-600 hover:bg-gray-100"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {t("navigation.profile")}
+                  Profile
                 </Link>
                 <button
                   onClick={() => {
@@ -177,7 +175,7 @@ const Navbar = () => {
                   }}
                   className="block w-full text-left px-4 py-2 text-base font-medium text-gray-500 hover:text-bluehire-600 hover:bg-gray-100"
                 >
-                  {t("auth.signOut")}
+                  Sign Out
                 </button>
               </div>
             ) : (
@@ -187,14 +185,14 @@ const Navbar = () => {
                   className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-bluehire-600 hover:bg-gray-100"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {t("auth.signIn")}
+                  Sign In
                 </Link>
                 <Link
                   to="/register"
                   className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-bluehire-600 hover:bg-gray-100"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {t("auth.signUp")}
+                  Sign Up
                 </Link>
               </div>
             )}

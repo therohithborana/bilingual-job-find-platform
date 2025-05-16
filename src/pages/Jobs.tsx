@@ -1,14 +1,12 @@
 
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { MOCK_JOBS, MOCK_LOCATIONS, JobPost } from "@/lib/models";
 
 const Jobs = () => {
-  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
@@ -30,14 +28,14 @@ const Jobs = () => {
 
   return (
     <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold text-bluehire-800 mb-8">{t("navigation.jobs")}</h1>
+      <h1 className="text-3xl font-bold text-bluehire-800 mb-8">Jobs</h1>
       
       {/* Search and filter section */}
       <div className="bg-white shadow-md rounded-lg p-6 mb-8">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
           <div>
             <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-1">
-              {t("jobs.search")}
+              Search jobs
             </label>
             <Input
               id="search"
@@ -50,7 +48,7 @@ const Jobs = () => {
           
           <div>
             <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
-              {t("jobs.location")}
+              Location
             </label>
             <select
               id="location"
@@ -69,7 +67,7 @@ const Jobs = () => {
           
           <div>
             <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
-              {t("jobs.category")}
+              Category
             </label>
             <select
               id="category"
@@ -126,8 +124,6 @@ const Jobs = () => {
 };
 
 const JobCard = ({ job }: { job: JobPost }) => {
-  const { t } = useTranslation();
-  
   return (
     <Card className="bluehire-card hover:scale-[1.01] transition-transform">
       <CardContent className="p-6">
@@ -163,7 +159,7 @@ const JobCard = ({ job }: { job: JobPost }) => {
                 {job.type}
               </span>
               <div className="mt-2 text-gray-600 text-sm">
-                <span>{t("jobs.experience")}: {job.experienceRequired}+ years</span>
+                <span>Experience: {job.experienceRequired}+ years</span>
               </div>
               <div className="text-gray-500 text-sm">
                 <span>Posted: {new Date(job.createdAt).toLocaleDateString()}</span>
@@ -171,7 +167,7 @@ const JobCard = ({ job }: { job: JobPost }) => {
             </div>
             
             <Link to={`/jobs/${job._id}`}>
-              <Button>{t("jobs.apply")}</Button>
+              <Button>Apply</Button>
             </Link>
           </div>
         </div>

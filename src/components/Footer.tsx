@@ -1,18 +1,15 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 
 const Footer = () => {
-  const { t } = useTranslation();
-  
   return (
     <footer className="bg-gray-800 text-white pt-10 pb-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-lg font-semibold mb-4">{t("common.appName")}</h3>
-            <p className="text-gray-300 text-sm">{t("common.tagline")}</p>
+            <h3 className="text-lg font-semibold mb-4">BlueHire</h3>
+            <p className="text-gray-300 text-sm">Connecting skills to opportunities</p>
             <div className="mt-4 flex space-x-4">
               <a href="#" className="text-gray-300 hover:text-white">
                 <span className="sr-only">Facebook</span>

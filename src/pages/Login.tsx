@@ -1,7 +1,6 @@
 
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Login = () => {
-  const { t } = useTranslation();
   const { login, isLoading } = useAuth();
   const navigate = useNavigate();
   
@@ -28,16 +26,16 @@ const Login = () => {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-center text-2xl font-bold text-bluehire-800">
-            {t("auth.signIn")}
+            Sign In
           </CardTitle>
           <CardDescription className="text-center">
-            {t("common.appName")} - {t("common.tagline")}
+            BlueHire - Connecting skills to opportunities
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email">{t("auth.email")}</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -49,7 +47,7 @@ const Login = () => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="password">{t("auth.password")}</Label>
+              <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -60,7 +58,7 @@ const Login = () => {
             </div>
             
             <div className="space-y-2">
-              <Label>{t("auth.selectRole")}</Label>
+              <Label>Select your role</Label>
               <div className="flex space-x-4">
                 <div className="flex items-center">
                   <input
@@ -73,7 +71,7 @@ const Login = () => {
                     className="h-4 w-4 text-bluehire-600 focus:ring-bluehire-500 border-gray-300"
                   />
                   <Label htmlFor="worker" className="ml-2">
-                    {t("auth.worker")}
+                    Worker
                   </Label>
                 </div>
                 
@@ -88,7 +86,7 @@ const Login = () => {
                     className="h-4 w-4 text-bluehire-600 focus:ring-bluehire-500 border-gray-300"
                   />
                   <Label htmlFor="recruiter" className="ml-2">
-                    {t("auth.recruiter")}
+                    Recruiter
                   </Label>
                 </div>
               </div>
@@ -96,19 +94,19 @@ const Login = () => {
             
             <div>
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Loading..." : t("auth.signIn")}
+                {isLoading ? "Loading..." : "Sign In"}
               </Button>
             </div>
           </form>
         </CardContent>
         <CardFooter className="flex flex-col space-y-2">
           <Link to="#" className="text-sm text-bluehire-600 hover:text-bluehire-500">
-            {t("auth.forgotPassword")}
+            Forgot password?
           </Link>
           <div className="text-sm text-gray-600">
-            {t("auth.noAccount")}{" "}
+            Don't have an account?{" "}
             <Link to="/register" className="font-medium text-bluehire-600 hover:text-bluehire-500">
-              {t("auth.signUp")}
+              Sign Up
             </Link>
           </div>
         </CardFooter>

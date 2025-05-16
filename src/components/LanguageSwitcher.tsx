@@ -1,6 +1,5 @@
 
 import React from "react";
-import { useTranslation } from "react-i18next";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,11 +9,10 @@ import {
 import { Button } from "@/components/ui/button";
 
 const LanguageSwitcher = () => {
-  const { t, i18n } = useTranslation();
-  const currentLanguage = i18n.language;
+  const [currentLanguage, setCurrentLanguage] = React.useState("en");
 
   const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
+    setCurrentLanguage(lng);
   };
 
   return (
