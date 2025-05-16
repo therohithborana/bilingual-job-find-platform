@@ -1,0 +1,190 @@
+
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+
+// English translations
+const enTranslations = {
+  common: {
+    appName: "BlueHire",
+    tagline: "Connecting skills to opportunities",
+    language: "Language",
+    english: "English",
+    kannada: "ಕನ್ನಡ",
+  },
+  auth: {
+    signIn: "Sign In",
+    signUp: "Sign Up",
+    signOut: "Sign Out",
+    email: "Email",
+    password: "Password",
+    forgotPassword: "Forgot password?",
+    noAccount: "Don't have an account?",
+    haveAccount: "Already have an account?",
+    selectRole: "Select your role",
+    worker: "Worker",
+    recruiter: "Recruiter",
+  },
+  navigation: {
+    home: "Home",
+    jobs: "Jobs",
+    profile: "Profile",
+    quickJobs: "Quick Jobs",
+    chat: "Messages",
+  },
+  landing: {
+    hero: "Find the right job or talent",
+    applyForJobs: "Apply for Jobs",
+    postJobs: "Post Jobs",
+    quickService: "Quick Service",
+    featured: "Featured Jobs",
+    howItWorks: "How it works",
+    testimonials: "What People Say",
+    joinNow: "Join Now",
+  },
+  jobs: {
+    search: "Search jobs",
+    location: "Location",
+    category: "Category",
+    salary: "Salary",
+    experience: "Experience",
+    apply: "Apply",
+    details: "Job Details",
+    requirements: "Requirements",
+    postedBy: "Posted by",
+    postedOn: "Posted on",
+  },
+  worker: {
+    completeProfile: "Complete your profile",
+    skills: "Skills",
+    addSkill: "Add skill",
+    experience: "Experience",
+    qualification: "Qualification",
+    availability: "Availability",
+    videoResume: "Video Resume",
+    uploadVideo: "Upload 30s Video",
+    quickJobs: "Enable Quick Jobs",
+  },
+  recruiter: {
+    companyInfo: "Company Information",
+    companyName: "Company Name",
+    industry: "Industry",
+    about: "About",
+    postNewJob: "Post New Job",
+    jobTitle: "Job Title",
+    jobType: "Job Type",
+    jobCategory: "Job Category",
+    jobDescription: "Job Description",
+  },
+  quickJobs: {
+    nearbyWorkers: "Nearby workers",
+    serviceType: "Service type",
+    yourLocation: "Your location",
+    findFix: "Find Fix",
+    accepted: "Worker accepted",
+    generateCode: "Generate Happy Code",
+    enterCode: "Enter Happy Code",
+    complete: "Complete Job",
+    rateService: "Rate service",
+  },
+};
+
+// Kannada translations
+const knTranslations = {
+  common: {
+    appName: "ಬ್ಲೂಹೈರ್",
+    tagline: "ಕೌಶಲ್ಯಗಳನ್ನು ಅವಕಾಶಗಳಿಗೆ ಸಂಪರ್ಕಿಸುವುದು",
+    language: "ಭಾಷೆ",
+    english: "English",
+    kannada: "ಕನ್ನಡ",
+  },
+  auth: {
+    signIn: "ಸೈನ್ ಇನ್",
+    signUp: "ಸೈನ್ ಅಪ್",
+    signOut: "ಸೈನ್ ಔಟ್",
+    email: "ಇಮೇಲ್",
+    password: "ಪಾಸ್‌ವರ್ಡ್",
+    forgotPassword: "ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿರಾ?",
+    noAccount: "ಖಾತೆ ಇಲ್ಲವೇ?",
+    haveAccount: "ಈಗಾಗಲೇ ಖಾತೆ ಇದೆಯೇ?",
+    selectRole: "ನಿಮ್ಮ ಪಾತ್ರವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    worker: "ಕಾರ್ಮಿಕ",
+    recruiter: "ನೇಮಕಾತಿದಾರ",
+  },
+  navigation: {
+    home: "ಮುಖಪುಟ",
+    jobs: "ಉದ್ಯೋಗಗಳು",
+    profile: "ಪ್ರೊಫೈಲ್",
+    quickJobs: "ತ್ವರಿತ ಕೆಲಸಗಳು",
+    chat: "ಸಂದೇಶಗಳು",
+  },
+  landing: {
+    hero: "ಸರಿಯಾದ ಉದ್ಯೋಗ ಅಥವಾ ಪ್ರತಿಭೆಯನ್ನು ಹುಡುಕಿ",
+    applyForJobs: "ಉದ್ಯೋಗಗಳಿಗೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ",
+    postJobs: "ಉದ್ಯೋಗಗಳನ್ನು ಪೋಸ್ಟ್ ಮಾಡಿ",
+    quickService: "ತ್ವರಿತ ಸೇವೆ",
+    featured: "ವಿಶೇಷ ಉದ್ಯೋಗಗಳು",
+    howItWorks: "ಇದು ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ",
+    testimonials: "ಜನರು ಏನು ಹೇಳುತ್ತಾರೆ",
+    joinNow: "ಈಗ ಸೇರಿ",
+  },
+  jobs: {
+    search: "ಉದ್ಯೋಗಗಳನ್ನು ಹುಡುಕಿ",
+    location: "ಸ್ಥಳ",
+    category: "ವರ್ಗ",
+    salary: "ಸಂಬಳ",
+    experience: "ಅನುಭವ",
+    apply: "ಅರ್ಜಿ ಸಲ್ಲಿಸಿ",
+    details: "ಉದ್ಯೋಗ ವಿವರಗಳು",
+    requirements: "ಅಗತ್ಯಗಳು",
+    postedBy: "ಪೋಸ್ಟ್ ಮಾಡಿದವರು",
+    postedOn: "ಪೋಸ್ಟ್ ಮಾಡಿದ ದಿನಾಂಕ",
+  },
+  worker: {
+    completeProfile: "ನಿಮ್ಮ ಪ್ರೊಫೈಲ್ ಅನ್ನು ಪೂರ್ಣಗೊಳಿಸಿ",
+    skills: "ಕೌಶಲ್ಯಗಳು",
+    addSkill: "ಕೌಶಲ್ಯ ಸೇರಿಸಿ",
+    experience: "ಅನುಭವ",
+    qualification: "ಯೋಗ್ಯತೆ",
+    availability: "ಲಭ್ಯತೆ",
+    videoResume: "ವಿಡಿಯೋ ರೆಸ್ಯುಮೆ",
+    uploadVideo: "30 ಸೆಕೆಂಡುಗಳ ವಿಡಿಯೋ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ",
+    quickJobs: "ತ್ವರಿತ ಕೆಲಸಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ",
+  },
+  recruiter: {
+    companyInfo: "ಕಂಪನಿ ಮಾಹಿತಿ",
+    companyName: "ಕಂಪನಿಯ ಹೆಸರು",
+    industry: "ಉದ್ಯಮ",
+    about: "ಕಂಪನಿಯ ಬಗ್ಗೆ",
+    postNewJob: "ಹೊಸ ಉದ್ಯೋಗವನ್ನು ಪೋಸ್ಟ್ ಮಾಡಿ",
+    jobTitle: "ಉದ್ಯೋಗ ಶೀರ್ಷಿಕೆ",
+    jobType: "ಉದ್ಯೋಗ ಪ್ರಕಾರ",
+    jobCategory: "ಉದ್ಯೋಗ ವರ್ಗ",
+    jobDescription: "ಉದ್ಯೋಗ ವಿವರಣೆ",
+  },
+  quickJobs: {
+    nearbyWorkers: "ಹತ್ತಿರದ ಕಾರ್ಮಿಕರು",
+    serviceType: "ಸೇವೆಯ ಪ್ರಕಾರ",
+    yourLocation: "ನಿಮ್ಮ ಸ್ಥಳ",
+    findFix: "ರಿಪೇರಿ ಹುಡುಕಿ",
+    accepted: "ಕಾರ್ಮಿಕರು ಸ್ವೀಕರಿಸಿದ್ದಾರೆ",
+    generateCode: "ಹ್ಯಾಪಿ ಕೋಡ್ ರಚಿಸಿ",
+    enterCode: "ಹ್ಯಾಪಿ ಕೋಡ್ ನಮೂದಿಸಿ",
+    complete: "ಕೆಲಸ ಪೂರ್ಣಗೊಳಿಸಿ",
+    rateService: "ಸೇವೆಯನ್ನು ರೇಟ್ ಮಾಡಿ",
+  },
+};
+
+// Initialize i18next
+i18n.use(initReactI18next).init({
+  resources: {
+    en: enTranslations,
+    kn: knTranslations,
+  },
+  lng: "en", // Default language
+  fallbackLng: "en",
+  interpolation: {
+    escapeValue: false, // React already escapes by default
+  },
+});
+
+export default i18n;
