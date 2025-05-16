@@ -1,7 +1,6 @@
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +12,6 @@ import { toast } from "sonner";
 import { MOCK_LOCATIONS } from "@/lib/models";
 
 const ProfileNew = () => {
-  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   
@@ -70,7 +68,7 @@ const ProfileNew = () => {
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-bluehire-800">
-            {t("worker.completeProfile")}
+            Complete Your Profile
           </CardTitle>
           <CardDescription>
             Fill in your profile details to start finding job opportunities
@@ -90,7 +88,7 @@ const ProfileNew = () => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="location">{t("jobs.location")}</Label>
+              <Label htmlFor="location">Location</Label>
               <select
                 id="location"
                 name="location"
@@ -109,7 +107,7 @@ const ProfileNew = () => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="skills">{t("worker.skills")}</Label>
+              <Label htmlFor="skills">Skills</Label>
               <Textarea
                 id="skills"
                 name="skills"
@@ -121,7 +119,7 @@ const ProfileNew = () => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="experienceYears">{t("worker.experience")} (Years)</Label>
+              <Label htmlFor="experienceYears">Experience (Years)</Label>
               <Input
                 id="experienceYears"
                 name="experienceYears"
@@ -147,7 +145,7 @@ const ProfileNew = () => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="qualification">{t("worker.qualification")}</Label>
+              <Label htmlFor="qualification">Qualification</Label>
               <Input
                 id="qualification"
                 name="qualification"
@@ -159,7 +157,7 @@ const ProfileNew = () => {
             </div>
             
             <div className="flex items-center justify-between">
-              <Label htmlFor="availability">{t("worker.availability")}</Label>
+              <Label htmlFor="availability">Availability</Label>
               <Switch
                 id="availability"
                 checked={formData.availability}
@@ -168,7 +166,7 @@ const ProfileNew = () => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="videoResume">{t("worker.videoResume")}</Label>
+              <Label htmlFor="videoResume">Video Resume</Label>
               <Input
                 id="videoResume"
                 type="file"
@@ -181,7 +179,7 @@ const ProfileNew = () => {
             </div>
             
             <div className="flex items-center justify-between">
-              <Label htmlFor="isQuickJobActive">{t("worker.quickJobs")}</Label>
+              <Label htmlFor="isQuickJobActive">Quick Jobs</Label>
               <Switch
                 id="isQuickJobActive"
                 checked={formData.isQuickJobActive}

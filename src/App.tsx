@@ -6,8 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
 import { useAuth } from "@/context/AuthContext";
-import { useEffect } from "react";
-import i18n from "@/lib/i18n";
 
 // Pages
 import Index from "./pages/Index";
@@ -69,25 +67,6 @@ const AppRoutes = () => {
 };
 
 const App = () => {
-  // Initialize i18n
-  useEffect(() => {
-    const savedLang = localStorage.getItem("bluehire_lang");
-    if (savedLang) {
-      i18n.changeLanguage(savedLang);
-    }
-    
-    // Save language preference when it changes
-    const handleLanguageChange = (lng: string) => {
-      localStorage.setItem("bluehire_lang", lng);
-    };
-
-    i18n.on("languageChanged", handleLanguageChange);
-
-    return () => {
-      i18n.off("languageChanged", handleLanguageChange);
-    };
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
