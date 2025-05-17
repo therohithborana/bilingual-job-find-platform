@@ -1,31 +1,50 @@
-
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { toast } from "sonner";
-import { User } from "@/lib/models";
+
+// User interface
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+  role: 'worker' | 'recruiter';
+}
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (email: string, password: string, role: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  register: (name: string, email: string, password: string, role: string) => Promise<void>;
-  setCurrentUser: (user: User | null) => void;
+  register: (name: string, email: string, password: string, role: 'worker' | 'recruiter') => Promise<void>;
+  switchRole: (role: 'worker' | 'recruiter') => void;
+  isAuthenticated: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Default development user
+const DEFAULT_DEV_USER: User = {
+  _id: "dev-user-123",
+  name: "Development User",
+  email: "dev@example.com",
+  role: 'worker', // Default role - can be switched
+};
+
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Check if user is logged in on mount
+  // Check if user is stored in localStorage on mount
   useEffect(() => {
     const storedUser = localStorage.getItem("bluehire_user");
     if (storedUser) {
       try {
-        setUser(JSON.parse(storedUser));
+        const userData = JSON.parse(storedUser);
+        setUser(userData);
+        setIsAuthenticated(true);
       } catch (error) {
         console.error("Failed to parse user from localStorage");
+        logout();
       }
     }
     setIsLoading(false);
@@ -35,66 +54,99 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setUser(userData);
     if (userData) {
       localStorage.setItem("bluehire_user", JSON.stringify(userData));
+      setIsAuthenticated(true);
     } else {
       localStorage.removeItem("bluehire_user");
+      setIsAuthenticated(false);
     }
   };
 
-  // Mock login function
-  const login = async (email: string, password: string, role: string) => {
+  // Login function
+  const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      // This would be an API call in a real app
-      // For demo, we'll use mock data
-      if (email && password) {
-        const mockUser: User = {
-          _id: Math.random().toString(36).substr(2, 9),
-          name: email.split('@')[0],
-          email,
-          role: role as 'worker' | 'recruiter' | 'admin',
-          languages: ['English'],
-          createdAt: new Date(),
-        };
-        
-        setCurrentUser(mockUser);
-        toast.success("Login successful!");
-      } else {
-        throw new Error("Invalid credentials");
+      // Check if user exists in localStorage
+      const users = JSON.parse(localStorage.getItem("bluehire_users") || "[]");
+      const foundUser = users.find((u: any) => u.email === email);
+      
+      if (!foundUser) {
+        throw new Error("User not found. Please register.");
       }
+      
+      if (foundUser.password !== password) {
+        throw new Error("Incorrect password.");
+      }
+      
+      // Successful login
+      const { password: _, ...userWithoutPassword } = foundUser;
+      setCurrentUser(userWithoutPassword);
+      toast.success("Login successful!");
     } catch (error) {
-      toast.error("Login failed. Please try again.");
-      console.error(error);
+      const errorMessage = error instanceof Error ? error.message : "Login failed. Please try again.";
+      toast.error(errorMessage);
+      throw error;
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Mock register function
-  const register = async (name: string, email: string, password: string, role: string) => {
+  // Register function
+  const register = async (name: string, email: string, password: string, role: 'worker' | 'recruiter') => {
     setIsLoading(true);
     try {
-      // This would be an API call in a real app
-      if (name && email && password && role) {
-        const mockUser: User = {
-          _id: Math.random().toString(36).substr(2, 9),
-          name,
-          email,
-          role: role as 'worker' | 'recruiter' | 'admin',
-          languages: ['English'],
-          createdAt: new Date(),
-        };
-        
-        setCurrentUser(mockUser);
-        toast.success("Registration successful!");
-      } else {
-        throw new Error("Please fill all required fields");
+      // Get existing users
+      const users = JSON.parse(localStorage.getItem("bluehire_users") || "[]");
+      
+      // Check if email already exists
+      if (users.some((u: any) => u.email === email)) {
+        throw new Error("Email already registered. Please login.");
       }
+      
+      // Create new user
+      const newUser = {
+        _id: `user-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+        name,
+        email,
+        password,
+        role,
+      };
+      
+      // Save to localStorage
+      users.push(newUser);
+      localStorage.setItem("bluehire_users", JSON.stringify(users));
+      
+      // Log in the user (without password in context)
+      const { password: _, ...userWithoutPassword } = newUser;
+      setCurrentUser(userWithoutPassword);
+      toast.success("Registration successful!");
     } catch (error) {
-      toast.error("Registration failed. Please try again.");
-      console.error(error);
+      const errorMessage = error instanceof Error ? error.message : "Registration failed. Please try again.";
+      toast.error(errorMessage);
+      throw error;
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Function to switch roles
+  const switchRole = (role: 'worker' | 'recruiter') => {
+    if (!user) return;
+    
+    // Update role in context
+    const updatedUser = { ...user, role };
+    setCurrentUser(updatedUser);
+    
+    // Also update in users array
+    const users = JSON.parse(localStorage.getItem("bluehire_users") || "[]");
+    const updatedUsers = users.map((u: any) => {
+      if (u.email === user.email) {
+        return { ...u, role };
+      }
+      return u;
+    });
+    localStorage.setItem("bluehire_users", JSON.stringify(updatedUsers));
+    
+    toast.success(`Switched to ${role} role`);
   };
 
   const logout = () => {
@@ -108,7 +160,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     login,
     logout,
     register,
-    setCurrentUser,
+    switchRole,
+    isAuthenticated
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -4,6 +4,26 @@
 
 **URL**: https://lovable.dev/projects/a14d5c00-e6cd-47ca-b8ae-9826c23933b9
 
+## Supabase Setup (Required)
+
+This project requires Supabase for database and authentication. Follow these steps to set it up:
+
+1. **Create a .env file** in the root directory with the following variables:
+   ```
+   VITE_SUPABASE_URL=your-supabase-url
+   VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+   ```
+
+2. **Get your Supabase credentials**:
+   - Go to [Supabase Dashboard](https://app.supabase.io)
+   - Select your project (or create a new one)
+   - Go to Project Settings > API
+   - Copy the "URL" and "anon public" key to your .env file
+
+3. **Restart your development server** after creating the .env file
+
+See `SUPABASE_SETUP.md` for more detailed instructions.
+
 ## How can I edit this code?
 
 There are several ways of editing your application.

@@ -1,155 +1,264 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { MOCK_JOBS, MOCK_SERVICES } from "@/lib/models";
+import { Briefcase, Zap, CheckCircle, Building, ArrowRight, Construction, PaintBucket, Wrench, Hammer, Plug, Heart } from "lucide-react";
 
-const Index = () => {
+// Mock job categories
+const JOB_CATEGORIES = [
+  { name: "Electrician", icon: <Plug className="h-6 w-6" /> },
+  { name: "Plumbing", icon: <Wrench className="h-6 w-6" /> },
+  { name: "Construction", icon: <Construction className="h-6 w-6" /> },
+  { name: "Carpentry", icon: <Hammer className="h-6 w-6" /> },
+  { name: "Painting", icon: <PaintBucket className="h-6 w-6" /> },
+  { name: "Caregiving", icon: <Heart className="h-6 w-6" /> },
+];
+
+export default function Index() {
+  const { isAuthenticated, user } = useAuth();
+
   return (
-    <div className="min-h-screen">
+    <div>
       {/* Hero Section */}
-      <section className="bluehire-gradient text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Find the right job or talent
+      <section className="relative">
+        <div 
+          className="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-blue-700/90 mix-blend-multiply" 
+          aria-hidden="true"
+        />
+        <div 
+          className="absolute inset-0 bg-cover bg-center" 
+          style={{ 
+            backgroundImage: "url('https://images.unsplash.com/photo-1540611025311-01df3cef54b5?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')", 
+            opacity: 0.25
+          }}
+        />
+        <div className="relative py-24 sm:py-32 container mx-auto px-4 sm:px-6 text-center">
+          <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl mb-6">
+            Find Your Perfect Blue Collar Job
           </h1>
-          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
-            Connecting skills to opportunities
+          <p className="mt-6 text-xl text-white/80 max-w-2xl mx-auto">
+            Connecting skilled workers with quality job opportunities. Start your journey to better employment today.
           </p>
-          <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-            <Link to="/jobs">
-              <Button size="lg" className="w-full sm:w-auto bg-white text-bluehire-700 hover:bg-gray-100">
-                Apply for Jobs
+          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild size="lg" className="gap-2">
+              <Link to="/jobs">
+                <Briefcase className="h-5 w-5" />
+                Browse Jobs
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="gap-2 bg-white/10 text-white hover:bg-white/20">
+              <Link to="/quick-jobs">
+                <Zap className="h-5 w-5" />
+                Quick Services
+              </Link>
+            </Button>
+            {!isAuthenticated && (
+              <Button asChild size="lg" variant="secondary" className="gap-2">
+                <Link to="/register">
+                  Get Started
+                  <ArrowRight className="h-5 w-5" />
+                </Link>
               </Button>
-            </Link>
-            <Link to="/recruiter/job-post">
-              <Button size="lg" className="w-full sm:w-auto bg-bluehire-700 text-white hover:bg-bluehire-800 border border-white">
-                Post Jobs
-              </Button>
-            </Link>
-            <Link to="/quick-jobs">
-              <Button size="lg" className="w-full sm:w-auto bg-white text-bluehire-700 hover:bg-gray-100">
-                Quick Service
-              </Button>
-            </Link>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Services Section */}
+      {/* Job Categories */}
       <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
-            Our Services
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {MOCK_SERVICES.map((service) => (
-              <Card key={service.id} className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-6 text-center">
-                  <div className="text-4xl mb-2">{service.icon}</div>
-                  <h3 className="font-medium text-lg">{service.name}</h3>
-                </CardContent>
-              </Card>
-            ))}
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900">Popular Job Categories</h2>
+            <p className="mt-4 text-xl text-gray-600 max-w-2xl mx-auto">
+              Browse jobs in various blue-collar sectors and find opportunities that match your skills
+            </p>
           </div>
-        </div>
-      </section>
-
-      {/* Featured Jobs */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
-            Featured Jobs
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {MOCK_JOBS.slice(0, 3).map((job) => (
-              <Card key={job._id} className="bluehire-card">
-                <CardContent className="p-6">
-                  <h3 className="font-bold text-xl mb-2 text-bluehire-800">{job.title}</h3>
-                  <p className="text-gray-500 mb-4">{job.location}</p>
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="bg-bluehire-50 text-bluehire-700 px-2 py-1 rounded text-sm">
-                      {job.type}
-                    </span>
-                    <span className="text-gray-700">
-                      ₹{job.salaryMin.toLocaleString()} - ₹{job.salaryMax.toLocaleString()}
-                    </span>
-                  </div>
-                  <p className="text-gray-600 mb-4 line-clamp-2">{job.description}</p>
-                  <div className="text-right">
-                    <Link to={`/jobs/${job._id}`}>
-                      <Button>Apply</Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            {JOB_CATEGORIES.map((category) => (
+              <Link 
+                key={category.name} 
+                to={`/jobs?category=${category.name}`}
+                className="flex flex-col items-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-all hover:-translate-y-1"
+              >
+                <div className="p-3 bg-blue-100 rounded-full text-blue-600 mb-4">
+                  {category.icon}
+                </div>
+                <h3 className="font-medium text-gray-900">{category.name}</h3>
+              </Link>
             ))}
-          </div>
-          <div className="text-center mt-10">
-            <Link to="/jobs">
-              <Button variant="outline">View All Jobs</Button>
-            </Link>
           </div>
         </div>
       </section>
 
       {/* How It Works */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
-            How it works
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <section className="py-16">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900">How BlueHire Works</h2>
+            <p className="mt-4 text-xl text-gray-600 max-w-2xl mx-auto">
+              Simple steps to find your next job or hire skilled workers
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-bluehire-100 flex items-center justify-center text-bluehire-600 text-2xl font-bold mx-auto mb-4">
+              <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-2xl font-bold mx-auto mb-4">
                 1
               </div>
-              <h3 className="text-xl font-bold mb-2">Create Profile</h3>
+              <h3 className="text-xl font-bold mb-2">Create Your Profile</h3>
               <p className="text-gray-600">
-                Register and complete your profile with skills, experience, and location.
+                Register an account as a worker to apply for jobs or as a recruiter to post opportunities
               </p>
             </div>
             <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-bluehire-100 flex items-center justify-center text-bluehire-600 text-2xl font-bold mx-auto mb-4">
+              <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-2xl font-bold mx-auto mb-4">
                 2
               </div>
-              <h3 className="text-xl font-bold mb-2">Find Opportunities</h3>
+              <h3 className="text-xl font-bold mb-2">Browse or Post Jobs</h3>
               <p className="text-gray-600">
-                Apply for regular jobs or activate quick jobs to receive service requests.
+                Search for jobs that match your skills or post jobs to find qualified workers
               </p>
             </div>
             <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-bluehire-100 flex items-center justify-center text-bluehire-600 text-2xl font-bold mx-auto mb-4">
+              <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-2xl font-bold mx-auto mb-4">
                 3
               </div>
-              <h3 className="text-xl font-bold mb-2">Earn & Grow</h3>
+              <h3 className="text-xl font-bold mb-2">Connect & Succeed</h3>
               <p className="text-gray-600">
-                Get paid for your skills and build your reputation through happy customers.
+                Apply for jobs, interview, and get hired or find the perfect workers for your needs
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Join Now CTA */}
-      <section className="py-16 bluehire-gradient text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-6">
-            Ready to get started?
-          </h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Join thousands of workers and recruiters already using BlueHire to connect skills with opportunities.
+      {/* Features Section */}
+      <section className="py-16 bg-blue-50">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900">Why Choose BlueHire</h2>
+            <p className="mt-4 text-xl text-gray-600 max-w-2xl mx-auto">
+              The platform dedicated to blue-collar workers and employers
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card className="border-0 shadow-md">
+              <CardContent className="pt-6">
+                <div className="flex items-center mb-4">
+                  <div className="mr-4 bg-blue-100 p-2.5 rounded-full text-blue-600">
+                    <Briefcase className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-bold">Quality Job Listings</h3>
+                </div>
+                <p className="text-gray-600">
+                  Verified employers posting legitimate job opportunities across various skill categories
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-0 shadow-md">
+              <CardContent className="pt-6">
+                <div className="flex items-center mb-4">
+                  <div className="mr-4 bg-blue-100 p-2.5 rounded-full text-blue-600">
+                    <Zap className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-bold">Quick Services</h3>
+                </div>
+                <p className="text-gray-600">
+                  Find immediate work opportunities or hire workers for urgent tasks in your area
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-0 shadow-md">
+              <CardContent className="pt-6">
+                <div className="flex items-center mb-4">
+                  <div className="mr-4 bg-blue-100 p-2.5 rounded-full text-blue-600">
+                    <Building className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-bold">Trusted Companies</h3>
+                </div>
+                <p className="text-gray-600">
+                  Connect with established businesses looking for skilled and reliable talent
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-0 shadow-md">
+              <CardContent className="pt-6">
+                <div className="flex items-center mb-4">
+                  <div className="mr-4 bg-blue-100 p-2.5 rounded-full text-blue-600">
+                    <CheckCircle className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-bold">Verified Skills</h3>
+                </div>
+                <p className="text-gray-600">
+                  Showcase your expertise and qualifications to stand out to potential employers
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-0 shadow-md">
+              <CardContent className="pt-6">
+                <div className="flex items-center mb-4">
+                  <div className="mr-4 bg-blue-100 p-2.5 rounded-full text-blue-600">
+                    <Briefcase className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-bold">Simple Applications</h3>
+                </div>
+                <p className="text-gray-600">
+                  Apply to jobs with just a few clicks and track all your applications in one place
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-0 shadow-md">
+              <CardContent className="pt-6">
+                <div className="flex items-center mb-4">
+                  <div className="mr-4 bg-blue-100 p-2.5 rounded-full text-blue-600">
+                    <Zap className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-bold">Fast Hiring</h3>
+                </div>
+                <p className="text-gray-600">
+                  Streamlined process to help employers find the right workers quickly and efficiently
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 bg-blue-700 text-white">
+        <div className="container mx-auto px-4 sm:px-6 text-center">
+          <h2 className="text-3xl font-bold mb-6">Ready to Get Started?</h2>
+          <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+            Join thousands of workers and employers already using BlueHire to connect skills with opportunities
           </p>
-          <Link to="/register">
-            <Button size="lg" className="bg-white text-bluehire-700 hover:bg-gray-100">
-              Join Now
-            </Button>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {isAuthenticated ? (
+              <Button asChild size="lg" className="bg-white text-blue-700 hover:bg-gray-100">
+                <Link to={user?.role === 'worker' ? "/jobs" : "/recruiter/dashboard"}>
+                  {user?.role === 'worker' ? 'Browse Jobs' : 'Manage Jobs'}
+                </Link>
+              </Button>
+            ) : (
+              <>
+                <Button asChild size="lg" className="bg-white text-blue-700 hover:bg-gray-100">
+                  <Link to="/register">Create Account</Link>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+                  <Link to="/login">Login</Link>
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       </section>
     </div>
   );
-};
-
-export default Index;
+}

@@ -1,20 +1,24 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "@/context/AuthContext";
-import { useAuth } from "@/context/AuthContext";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { AuthProvider, useAuth } from "@/context/AuthContext";
 
 // Pages
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
-import ProfileNew from "./pages/worker/ProfileNew";
 import Jobs from "./pages/Jobs";
 import QuickJobs from "./pages/QuickJobs";
+import RecruiterDashboard from "./pages/recruiter/Dashboard";
+import WorkerDashboard from "./pages/worker/Dashboard";
+import WorkerProfile from "./pages/worker/Profile";
+import RecruiterProfile from "./pages/recruiter/Profile";
+import RequestService from "./pages/RequestService";
+import ServiceBids from "./pages/ServiceBids";
+import WorkerServiceRequests from "./pages/WorkerServiceRequests";
 
 // Layout
 import Navbar from "./components/Navbar";
@@ -22,23 +26,20 @@ import Footer from "./components/Footer";
 
 const queryClient = new QueryClient();
 
-// Protected route wrapper
-const ProtectedRoute = ({ children, role }: { children: React.ReactNode, role?: string }) => {
-  const { user, isLoading } = useAuth();
-  
-  if (isLoading) {
-    return <div className="flex min-h-screen items-center justify-center">Loading...</div>;
+// Protected Route component
+const ProtectedRoute = ({ children, requiredRole }: { children: JSX.Element, requiredRole?: 'worker' | 'recruiter' }) => {
+  const { isAuthenticated, user } = useAuth();
+  const location = useLocation();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (!user) {
-    return <Navigate to="/login" />;
+  if (requiredRole && user?.role !== requiredRole) {
+    return <Navigate to="/" replace />;
   }
-  
-  if (role && user.role !== role) {
-    return <Navigate to="/" />;
-  }
-  
-  return <>{children}</>;
+
+  return children;
 };
 
 const AppRoutes = () => {
@@ -50,14 +51,64 @@ const AppRoutes = () => {
       <Route path="/jobs" element={<Jobs />} />
       <Route path="/quick-jobs" element={<QuickJobs />} />
       
-      {/* Worker routes */}
-      <Route 
-        path="/worker/profile/new" 
+      {/* Protected routes */}
+      <Route
+        path="/worker/dashboard"
         element={
-          <ProtectedRoute role="worker">
-            <ProfileNew />
+          <ProtectedRoute requiredRole="worker">
+            <WorkerDashboard />
           </ProtectedRoute>
-        } 
+        }
+      />
+      <Route
+        path="/worker/profile"
+        element={
+          <ProtectedRoute requiredRole="worker">
+            <WorkerProfile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/recruiter/dashboard"
+        element={
+          <ProtectedRoute requiredRole="recruiter">
+            <RecruiterDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/recruiter/profile"
+        element={
+          <ProtectedRoute requiredRole="recruiter">
+            <RecruiterProfile />
+          </ProtectedRoute>
+        }
+      />
+      
+      {/* New Quick Service Routes */}
+      <Route
+        path="/request-service"
+        element={
+          <ProtectedRoute>
+            <RequestService />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/service-bids/:requestId"
+        element={
+          <ProtectedRoute>
+            <ServiceBids />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/worker/service-requests"
+        element={
+          <ProtectedRoute requiredRole="worker">
+            <WorkerServiceRequests />
+          </ProtectedRoute>
+        }
       />
       
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

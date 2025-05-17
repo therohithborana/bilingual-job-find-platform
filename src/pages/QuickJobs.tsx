@@ -1,274 +1,184 @@
-
-import React, { useState } from "react";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { MOCK_SERVICES, MOCK_LOCATIONS, MOCK_WORKERS } from "@/lib/models";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import { MapPin, Clock, Zap, Hammer, Wrench, Plug, PaintBucket, Droplet, Fan } from "lucide-react";
+
+const SERVICES = [
+  { name: "Electrician", icon: <Plug className="h-6 w-6" /> },
+  { name: "Plumber", icon: <Droplet className="h-6 w-6" /> },
+  { name: "Carpenter", icon: <Hammer className="h-6 w-6" /> },
+  { name: "Painter", icon: <PaintBucket className="h-6 w-6" /> },
+  { name: "AC Technician", icon: <Fan className="h-6 w-6" /> },
+  { name: "General Repair", icon: <Wrench className="h-6 w-6" /> },
+];
 
 const QuickJobs = () => {
-  const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
-    customerName: "",
-    serviceType: "",
-    location: "",
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [activeRequest, setActiveRequest] = useState<{
-    requestId: string;
-    serviceType: string;
-    worker?: typeof MOCK_WORKERS[0];
-  } | null>(null);
+  const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      
-      // Create a "request"
-      const requestId = Math.random().toString(36).substring(2, 15);
-      setActiveRequest({
-        requestId,
-        serviceType: formData.serviceType,
-      });
-      
-      toast.success("Service request submitted! Looking for available workers...");
-      setStep(2);
-      
-      // Simulate finding a worker after 3 seconds
-      setTimeout(() => {
-        const availableWorker = MOCK_WORKERS.find(w => w.isQuickJobActive);
-        
-        if (availableWorker) {
-          setActiveRequest(prev => ({
-            ...prev!,
-            worker: availableWorker
-          }));
-          toast.success(`Worker ${availableWorker.name} accepted your request!`);
-          setStep(3);
-        } else {
-          toast.error("No workers available at the moment. Please try again later.");
-          setStep(1);
-          setActiveRequest(null);
-        }
-      }, 3000);
-      
-    } catch (error) {
-      toast.error("Failed to submit service request. Please try again.");
-      console.error("Error submitting service request:", error);
-    } finally {
-      setIsSubmitting(false);
+  const handleRequestService = () => {
+    if (!isAuthenticated) {
+      toast.error("Please log in to request services");
+      navigate("/login");
+      return;
     }
+    
+    navigate("/request-service");
   };
 
-  const generateHappyCode = () => {
-    const code = Math.floor(1000 + Math.random() * 9000).toString();
-    toast.success(`Happy Code: ${code}`);
-    return code;
-  };
-
-  const handleComplete = () => {
-    toast.success("Service completed successfully!");
-    setActiveRequest(null);
-    setStep(1);
-    setFormData({
-      customerName: "",
-      serviceType: "",
-      location: "",
-    });
-  };
-
-  const handleCancel = () => {
-    toast.info("Service request cancelled");
-    setActiveRequest(null);
-    setStep(1);
+  const handleFindWork = () => {
+    if (!isAuthenticated) {
+      toast.error("Please log in to find work");
+      navigate("/login");
+      return;
+    }
+    
+    if (user?.role !== "worker") {
+      toast.error("Only workers can access this section");
+      return;
+    }
+    
+    navigate("/worker/service-requests");
   };
 
   return (
-    <div className="max-w-3xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold text-bluehire-800 mb-8">
-        Quick Jobs
-      </h1>
-      
-      {step === 1 && (
-        <Card>
+    <div className="container mx-auto py-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <div>
+          <h1 className="text-3xl font-bold">Quick Services</h1>
+          <p className="text-muted-foreground">
+            Connect with skilled workers in your area for immediate assistance
+          </p>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6 mb-12">
+        <Card className="relative overflow-hidden border-2 border-primary/20 hover:border-primary/50 transition-all">
+          <div className="absolute top-0 right-0 bg-primary text-primary-foreground px-3 py-1 text-xs font-semibold">
+            For Customers
+          </div>
           <CardHeader>
-            <CardTitle>Request Quick Service</CardTitle>
-            <CardDescription>
-              Find skilled workers for urgent services in your area
-            </CardDescription>
+            <CardTitle className="flex items-center">
+              <MapPin className="h-5 w-5 mr-2 text-primary" />
+              Request Quick Service
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <label htmlFor="customerName" className="block text-sm font-medium text-gray-700">
-                  Your Name
-                </label>
-                <Input
-                  id="customerName"
-                  name="customerName"
-                  value={formData.customerName}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <label htmlFor="serviceType" className="block text-sm font-medium text-gray-700">
-                  Service Type
-                </label>
-                <select
-                  id="serviceType"
-                  name="serviceType"
-                  value={formData.serviceType}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bluehire-500 focus:border-transparent"
-                  required
-                >
-                  <option value="">Select service</option>
-                  {MOCK_SERVICES.map((service) => (
-                    <option key={service.id} value={service.name}>
-                      {service.icon} {service.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              
-              <div className="space-y-2">
-                <label htmlFor="location" className="block text-sm font-medium text-gray-700">
-                  Your Location
-                </label>
-                <select
-                  id="location"
-                  name="location"
-                  value={formData.location}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-bluehire-500 focus:border-transparent"
-                  required
-                >
-                  <option value="">Select location</option>
-                  {MOCK_LOCATIONS.map((location) => (
-                    <option key={location} value={location}>
-                      {location}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Find Fix"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      )}
-      
-      {step === 2 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Finding Workers</CardTitle>
-            <CardDescription>
-              Looking for available {activeRequest?.serviceType} workers in {formData.location}...
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="text-center py-8">
-            <div className="flex justify-center mb-6">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-bluehire-600"></div>
-            </div>
-            <p className="text-gray-500">
-              This won't take long. We're connecting you with nearby verified professionals.
+            <p className="text-muted-foreground mb-4">
+              Need immediate help? Request a service and nearby workers will send you quotes in real-time.
             </p>
+            <div className="grid grid-cols-3 gap-2 mb-4">
+              {SERVICES.map((service) => (
+                <div 
+                  key={service.name}
+                  className="flex flex-col items-center p-3 bg-muted/50 rounded-md"
+                >
+                  <div className="text-primary mb-1">{service.icon}</div>
+                  <div className="text-xs font-medium">{service.name}</div>
+                </div>
+              ))}
+            </div>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center">
+                <Zap className="h-4 w-4 mr-2 text-yellow-500" />
+                <span>Fast response from local workers</span>
+              </div>
+              <div className="flex items-center">
+                <Clock className="h-4 w-4 mr-2 text-green-500" />
+                <span>Get multiple quotes within minutes</span>
+              </div>
+            </div>
           </CardContent>
           <CardFooter>
-            <Button variant="outline" className="w-full" onClick={handleCancel}>
-              Cancel Request
+            <Button 
+              className="w-full" 
+              size="lg"
+              onClick={handleRequestService}
+            >
+              Request Service Now
             </Button>
           </CardFooter>
         </Card>
-      )}
-      
-      {step === 3 && activeRequest?.worker && (
-        <Card>
+
+        <Card className="relative overflow-hidden border-2 border-primary/20 hover:border-primary/50 transition-all">
+          <div className="absolute top-0 right-0 bg-primary text-primary-foreground px-3 py-1 text-xs font-semibold">
+            For Workers
+          </div>
           <CardHeader>
-            <CardTitle>Worker Accepted</CardTitle>
-            <CardDescription>
-              A worker has accepted your service request
-            </CardDescription>
+            <CardTitle className="flex items-center">
+              <Zap className="h-5 w-5 mr-2 text-primary" />
+              Find Quick Work
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col items-center py-4">
-              <div className="h-20 w-20 rounded-full bg-bluehire-100 flex items-center justify-center text-bluehire-800 text-3xl font-semibold mb-4">
-                {activeRequest.worker.name.charAt(0).toUpperCase()}
-              </div>
-              <h3 className="text-xl font-bold">{activeRequest.worker.name}</h3>
-              <p className="text-gray-500 mb-2">{activeRequest.serviceType}</p>
-              <div className="flex items-center text-yellow-500 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
+            <p className="text-muted-foreground mb-4">
+              Are you a skilled worker? Find nearby service requests and place bids to get hired instantly.
+            </p>
+            <div className="space-y-2 mb-4">
+              <div className="p-3 bg-muted/50 rounded-md">
+                <div className="font-medium mb-1">How it works:</div>
+                <ol className="list-decimal ml-5 text-sm space-y-1">
+                  <li>Browse service requests near you</li>
+                  <li>Place a bid with your price and arrival time</li>
+                  <li>Get notified instantly when hired</li>
+                  <li>Complete the work and get paid</li>
+                </ol>
               </div>
             </div>
-            
-            <div className="border-t border-gray-200 pt-4">
-              <div className="mb-6">
-                <h4 className="font-medium mb-2">Contact</h4>
-                <p className="text-gray-600">
-                  Experience: {activeRequest.worker.experienceYears} years
-                </p>
-                <p className="text-gray-600">
-                  Languages: {activeRequest.worker.languages.join(", ")}
-                </p>
-              </div>
-              
-              {/* Chat mockup */}
-              <div className="border border-gray-200 rounded-lg p-3 h-36 mb-4 bg-gray-50 overflow-y-scroll">
-                <p className="text-center text-gray-500 text-sm">
-                  Chat functionality would appear here in a real implementation
-                </p>
-              </div>
-            </div>
-            
-            <div className="space-y-4 border-t border-gray-200 pt-4">
-              <Button 
-                className="w-full" 
-                onClick={() => {
-                  const code = generateHappyCode();
-                }}
-              >
-                Generate Happy Code
-              </Button>
+            <div className="text-sm font-medium flex items-center">
+              <Clock className="h-4 w-4 mr-2 text-primary" />
+              <span>Real-time location-based job matching</span>
             </div>
           </CardContent>
-          <CardFooter className="flex flex-col space-y-3">
-            <Button onClick={handleComplete} className="w-full">
-              Complete
-            </Button>
-            <Button variant="outline" onClick={handleCancel} className="w-full">
-              Cancel Service
+          <CardFooter>
+            <Button 
+              className="w-full" 
+              size="lg"
+              onClick={handleFindWork}
+              variant={user?.role === "worker" ? "default" : "secondary"}
+            >
+              {user?.role === "worker" ? "Find Work Nearby" : "For Workers Only"}
             </Button>
           </CardFooter>
         </Card>
-      )}
+      </div>
+
+      <div className="bg-muted/50 rounded-lg p-6">
+        <h2 className="text-xl font-bold mb-4">How Our Quick Services Work</h2>
+        <div className="grid md:grid-cols-3 gap-6">
+          <div className="flex flex-col items-center text-center">
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-3">
+              1
+            </div>
+            <h3 className="font-medium mb-2">Request or Offer</h3>
+            <p className="text-sm text-muted-foreground">
+              Customers request services with their location and details. Workers see nearby opportunities.
+            </p>
+          </div>
+          <div className="flex flex-col items-center text-center">
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-3">
+              2
+            </div>
+            <h3 className="font-medium mb-2">Real-time Bidding</h3>
+            <p className="text-sm text-muted-foreground">
+              Workers place competitive bids with their rates and estimated arrival times.
+            </p>
+          </div>
+          <div className="flex flex-col items-center text-center">
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-3">
+              3
+            </div>
+            <h3 className="font-medium mb-2">Connect & Complete</h3>
+            <p className="text-sm text-muted-foreground">
+              Customers select their preferred worker, who arrives promptly to complete the service.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

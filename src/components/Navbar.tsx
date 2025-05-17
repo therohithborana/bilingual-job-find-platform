@@ -1,205 +1,115 @@
-
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
-import LanguageSwitcher from "./LanguageSwitcher";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
+import { UserCircle, LogOut, LayoutDashboard, User } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, logout, isAuthenticated } = useAuth();
 
   return (
-    <nav className="bg-white shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex">
-            <Link to="/" className="flex-shrink-0 flex items-center">
-              <span className="text-2xl font-bold text-bluehire-600">
-                BlueHire
-              </span>
-            </Link>
-          </div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
-            <Link
+    <header className="w-full border-b bg-background">
+      <div className="container flex h-16 items-center justify-between">
+        <div className="flex items-center gap-6">
+          <Link to="/" className="flex items-center gap-2">
+            <span className="text-xl font-bold text-primary">BlueHire</span>
+          </Link>
+          <nav className="hidden md:flex items-center gap-6">
+            <Link 
               to="/jobs"
-              className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-bluehire-600 hover:bg-gray-50"
+              className="text-sm font-medium transition-colors hover:text-primary"
             >
               Jobs
             </Link>
-            <Link
-              to="/quick-jobs"
-              className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-bluehire-600 hover:bg-gray-50"
+            <Link 
+              to="/quick-jobs" 
+              className="text-sm font-medium transition-colors hover:text-primary"
             >
-              Quick Jobs
+              Quick Services
             </Link>
-            {user && (
-              <Link
-                to={user.role === 'worker' ? '/worker/profile' : '/recruiter/dashboard'}
-                className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-bluehire-600 hover:bg-gray-50"
+            {isAuthenticated && user?.role === 'worker' && (
+              <Link 
+                to="/worker/dashboard" 
+                className="text-sm font-medium transition-colors hover:text-primary"
               >
-                Profile
+                My Applications
               </Link>
             )}
-          </div>
-
-          <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
-            <LanguageSwitcher />
-            
-            {user ? (
+            {isAuthenticated && user?.role === 'recruiter' && (
+              <Link 
+                to="/recruiter/dashboard" 
+                className="text-sm font-medium transition-colors hover:text-primary"
+              >
+                Manage Jobs
+              </Link>
+            )}
+          </nav>
+        </div>
+        <div className="flex items-center gap-4">
+          {isAuthenticated ? (
+            <>
+              {/* User dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative rounded-full bg-white">
-                    <span className="sr-only">Open user menu</span>
-                    <div className="h-8 w-8 rounded-full bg-bluehire-100 flex items-center justify-center text-bluehire-800 font-semibold">
-                      {user.name.charAt(0).toUpperCase()}
-                    </div>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback>{user?.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+                    </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user?.name}</p>
+                      <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+                    </div>
+                  </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link to={user.role === 'worker' ? '/worker/profile' : '/recruiter/dashboard'}>
-                      Profile
-                    </Link>
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem asChild>
+                      <Link to={user?.role === 'worker' ? '/worker/dashboard' : '/recruiter/dashboard'}>
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        <span>Dashboard</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to={user?.role === 'worker' ? '/worker/profile' : '/recruiter/profile'}>
+                        <User className="mr-2 h-4 w-4" />
+                        <span>Profile</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={logout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logout}>Sign Out</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            ) : (
-              <div className="flex space-x-2">
-                <Link to="/login">
-                  <Button variant="ghost">Sign In</Button>
-                </Link>
-                <Link to="/register">
-                  <Button variant="default">Sign Up</Button>
-                </Link>
-              </div>
-            )}
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="flex items-center sm:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-bluehire-500"
-              aria-expanded="false"
-            >
-              <span className="sr-only">Open main menu</span>
-              {isMenuOpen ? (
-                <svg
-                  className="block h-6 w-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg
-                  className="block h-6 w-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              )}
-            </button>
-          </div>
+            </>
+          ) : (
+            <div className="flex gap-2">
+              <Link to="/login">
+                <Button variant="ghost" size="sm">Login</Button>
+              </Link>
+              <Link to="/register">
+                <Button size="sm">Register</Button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Mobile menu */}
-      {isMenuOpen && (
-        <div className="sm:hidden">
-          <div className="pt-2 pb-3 space-y-1">
-            <Link
-              to="/jobs"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-bluehire-600 hover:bg-gray-50"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Jobs
-            </Link>
-            <Link
-              to="/quick-jobs"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-bluehire-600 hover:bg-gray-50"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Quick Jobs
-            </Link>
-            {user && (
-              <Link
-                to={user.role === 'worker' ? '/worker/profile' : '/recruiter/dashboard'}
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-bluehire-600 hover:bg-gray-50"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Profile
-              </Link>
-            )}
-          </div>
-          
-          <div className="pt-4 pb-3 border-t border-gray-200">
-            <LanguageSwitcher />
-            
-            {user ? (
-              <div className="mt-3 space-y-1">
-                <div className="block px-4 py-2 text-base font-medium text-gray-500">
-                  {user.name}
-                </div>
-                <Link
-                  to={user.role === 'worker' ? '/worker/profile' : '/recruiter/dashboard'}
-                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-bluehire-600 hover:bg-gray-100"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Profile
-                </Link>
-                <button
-                  onClick={() => {
-                    logout();
-                    setIsMenuOpen(false);
-                  }}
-                  className="block w-full text-left px-4 py-2 text-base font-medium text-gray-500 hover:text-bluehire-600 hover:bg-gray-100"
-                >
-                  Sign Out
-                </button>
-              </div>
-            ) : (
-              <div className="mt-3 space-y-1 px-4">
-                <Link
-                  to="/login"
-                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-bluehire-600 hover:bg-gray-100"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign In
-                </Link>
-                <Link
-                  to="/register"
-                  className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-bluehire-600 hover:bg-gray-100"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign Up
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </nav>
+    </header>
   );
 };
 

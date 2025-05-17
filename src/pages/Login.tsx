@@ -1,116 +1,95 @@
-
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 const Login = () => {
-  const { login, isLoading } = useAuth();
   const navigate = useNavigate();
-  
+  const { login, isAuthenticated } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("worker");
-  
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Redirect if already logged in
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await login(email, password, role);
-    navigate("/");
+    if (!email || !password) {
+      toast.error("Please enter both email and password");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await login(email, password);
+      navigate("/");
+    } catch (error) {
+      console.error("Login error:", error);
+      // Error messages are already shown via toast in the auth context
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl font-bold text-bluehire-800">
-            Sign In
-          </CardTitle>
-          <CardDescription className="text-center">
-            BlueHire - Connecting skills to opportunities
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="email@example.com"
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label>Select your role</Label>
-              <div className="flex space-x-4">
-                <div className="flex items-center">
-                  <input
-                    id="worker"
-                    type="radio"
-                    name="role"
-                    value="worker"
-                    checked={role === "worker"}
-                    onChange={() => setRole("worker")}
-                    className="h-4 w-4 text-bluehire-600 focus:ring-bluehire-500 border-gray-300"
-                  />
-                  <Label htmlFor="worker" className="ml-2">
-                    Worker
-                  </Label>
-                </div>
-                
-                <div className="flex items-center">
-                  <input
-                    id="recruiter"
-                    type="radio"
-                    name="role"
-                    value="recruiter"
-                    checked={role === "recruiter"}
-                    onChange={() => setRole("recruiter")}
-                    className="h-4 w-4 text-bluehire-600 focus:ring-bluehire-500 border-gray-300"
-                  />
-                  <Label htmlFor="recruiter" className="ml-2">
-                    Recruiter
-                  </Label>
-                </div>
+    <div className="container mx-auto py-12">
+      <div className="max-w-md mx-auto">
+        <Card>
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-bold">Login</CardTitle>
+            <CardDescription>
+              Enter your credentials to access your account
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="name@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
               </div>
-            </div>
-            
-            <div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password">Password</Label>
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Loading..." : "Sign In"}
+                {isLoading ? "Logging in..." : "Login"}
               </Button>
+            </form>
+          </CardContent>
+          <CardFooter className="flex flex-col space-y-4">
+            <div className="text-center text-sm">
+              Don't have an account?{" "}
+              <Link to="/register" className="text-primary hover:underline">
+                Register
+              </Link>
             </div>
-          </form>
-        </CardContent>
-        <CardFooter className="flex flex-col space-y-2">
-          <Link to="#" className="text-sm text-bluehire-600 hover:text-bluehire-500">
-            Forgot password?
-          </Link>
-          <div className="text-sm text-gray-600">
-            Don't have an account?{" "}
-            <Link to="/register" className="font-medium text-bluehire-600 hover:text-bluehire-500">
-              Sign Up
-            </Link>
-          </div>
-        </CardFooter>
-      </Card>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   );
 };
